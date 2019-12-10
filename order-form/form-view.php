@@ -29,7 +29,7 @@
 
         <?php // I MAKE ALL FIELDS FOR THE ADDRESS REQUIRED BY MAKING THESE EMPRTY STRING VARIABLES 
         $emailErr = $streetErr = $streetNumberErr = $cityErr = $zipcodeErr = "";
-        $email = $street = $streetNumber = $city = $zipcode = "";        
+        $email = $street = $streetNumber = $city = $zipcode = "";
 
         $isFormValid = true;
 
@@ -49,11 +49,10 @@
             }
 
             $streetNumber = ($_POST["streetnumber"]);
-            if(empty($streetNumber)) {
+            if (empty($streetNumber)) {
                 $streetNumberErr = "Street number is required";
                 $isFormValid = false;
-            }
-            else if(!filter_var($streetNumber, FILTER_VALIDATE_INT)) {
+            } else if (!filter_var($streetNumber, FILTER_VALIDATE_INT)) {
                 $streetNumberErr = "Street number must be numerical";
                 $isFormValid = false;
             }
@@ -65,27 +64,19 @@
             }
 
             $zipcode = ($_POST["zipcode"]);
-            if(empty($zipcode)) {
+            if (empty($zipcode)) {
                 $zipcodeErr = "Zipcode is required";
                 $isFormValid = false;
-            }
-            else if(!filter_var($zipcode, FILTER_VALIDATE_INT)) {
+            } else if (!filter_var($zipcode, FILTER_VALIDATE_INT)) {
                 $zipcodeErr = "Zipcode must be numerical";
                 $isFormValid = false;
             }
         }
-        ?> 
-
-        <?php
-
-            if($_SERVER["REQUEST_METHOD"] == "POST") {
-                if($isFormValid) {
-                    ?> <h1 style="color:green">Your order was recorded!</h1> <?php
-                } else {
-                    ?> <h1 style="color:red">Your order was shit!</h1> <?php
-                }
-            }            
         ?>
+
+
+
+        <!--old display message -->
 
         <form method="post">
             <div class="form-row">
@@ -93,7 +84,7 @@
                     <label for="email">E-mail:</label>
                     <input type="text" id="email" name="email" class="form-control" value="<?php echo $email ?>" />
                     <?php echo $emailErr; ?></span>
-                        <br><br>
+                    <br><br>
                 </div>
                 <div></div>
             </div>
@@ -130,7 +121,6 @@
                     </div>
                 </div>
             </fieldset>
-            <button type="submit" class="btn btn-primary">Order!</button>
             <br>
 
 
@@ -138,44 +128,123 @@
                 <legend>Products</legend>
 
 
+                <?php
 
 
-                <?php                      
-                    
-                    $menu = 0;                    
-                    $products;
+                // WHICH MENU IS DISPLAYED
+                $menu = 0;
+                $products;
 
-                    if(isset($_GET["menu"])) {
-                        $menu = $_GET["menu"];
-                    }
+                if (isset($_GET["menu"])) {
+                    $menu = $_GET["menu"];
+                }
 
-                    if($menu == 0) {
-                        $products = $foodProducts;
-                    }
-                    else if($menu == 1) {
-                        $products = $drinkProducts;
-                    }
+                if ($menu == 0) {
+                    $products = $foodProducts;
+                } else if ($menu == 1) {
+                    $products = $drinkProducts;
+                }
 
-                    foreach ($products as $i => $product) : ?>
-                        <label>
-                            <input type="checkbox" value="1" name="products[<?php echo $i ?>]" /> <?php echo $product['name'] ?> -
-                            &euro; <?php echo number_format($product['price'], 2) ?>
-                        </label>
-                        <br />
-                    <?php endforeach; 
+                foreach ($products as $i => $product) : ?>
+                    <label>
+                        <input type="checkbox" value="1" name="products[<?php echo $i ?>]" /> <?php echo $product['name'] ?> -
+                        &euro; <?php echo number_format($product['price'], 2) ?>
+                    </label>
+                    <br />
+                <?php endforeach;
+
+
+                // setting the ordered item variable for display purposes
+                foreach ($_POST["products"] as $key => $value) {
+
+                    $orderedItem = $products[$key];
+
+                    //echo "You have chosen " . $orderedItem["name"];
+                }
                 ?>
+                <br><br>
+
+
+
+
+                <legend>Delivery Method</legend>
+                <?php
+
+
+                // DELIVERY METHODS
+                foreach ($deliveryTypes as $i => $deliveryType) : ?>
+                    <label>
+                        <input type="checkbox" value="1" name="delivery[<?php echo $i ?>]" /> <?php echo $deliveryType['type'] ?> -
+                        &euro; <?php echo number_format($deliveryType['price'], 2) ?>
+                    </label>
+                    <br />
+                <?php endforeach;
+
+                // setting the delivery time variable for display purposes
+                foreach ($_POST["delivery"] as $key => $value) {
+
+                    $deliveryTime = $deliveryTypes[$key];
+
+                    //echo "You have chosen " . $deliveryTime["type"];
+                }
+
+                foreach ($_POST["delivery"] as $key => $value) {
+
+                    $deliveryCost = $deliveryTypes[$key];
+
+                    //echo "It's gonna cost " . $deliveryCost["price"];
+                }
+
+                foreach ($_POST["products"] as $key => $value) {
+
+                    $productCost = $products[$key];
+
+                    //echo "It's gonna cost " . $productCost["price"];
+                }
+
+                $totalValue = $productCost['price'] + $deliveryCost['price'];
+
+                //echo "The total value is " . $totalValue;
+                ?>
+                <br><br>
+
 
 
 
             </fieldset>
-
+            <br><br>
+            <button type="submit" class="btn btn-primary">Order!</button>
 
         </form>
 
-        <footer>You already ordered <strong>&euro; <?php echo $totalValue ?></strong> in food and drinks.</footer>
-    </div>
 
-    <?php whatIsHappening(); ?>
+
+        <?php
+        // THE MAILS
+        $to = "erin.joosen@gmil.com";
+        $subject = "Order - the Personal Ham Processors";
+        $txt = " Thank you for your order: " . $orderedItem['name'] . ". \nYou requested " . $deliveryTime['type'] . " delivery. \nThe total cost was: " . $totalValue;
+        $headers = "From: tPHP@orders.com" . "\r\n" .
+            "CC: $email";
+
+        mail($to, $subject, $txt, $headers);
+        ?>
+
+        <footer>You ordered <strong>&euro; <?php echo $totalValue ?></strong> in food and drinks.</footer>
+    </div>
+    <?php
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($isFormValid) {
+            ?> <h1 style="color:green">Your order (<?php echo $orderedItem['name'] ?>) has been received. Expect delivery in <?php echo $deliveryTime['time'] ?>. </h1> <?php
+                                                                                                                                                                            } else {
+                                                                                                                                                                                ?> <h1 style="color:red">Your order was shit!</h1> <?php
+                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                    ?>
+
+    <?  // whatIsHappening(); 
+    ?>
 
     <style>
         footer {

@@ -3,7 +3,8 @@
 declare(strict_types=1);
 //we are going to use session variables so we need to enable sessions
 session_start();
-function whatIsHappening() {
+function whatIsHappening()
+{
     echo '<h2>$_GET</h2>';
     var_dump($_GET);
     echo '<h2>$_POST</h2>';
@@ -13,6 +14,14 @@ function whatIsHappening() {
     echo '<h2>$_SESSION</h2>';
     var_dump($_SESSION);
 }
+
+//the delivery options
+
+$deliveryTypes = [
+    ['type' => 'Express delivery (2 hours)', 'price' => 4.00, 'time' => '2 hours'],
+    ['type' => 'Normal delivery (45 minutes)', 'price' => 2.00, 'time' => '45 minutes']
+];
+
 //your products with their price.
 $foodProducts = [
     ['name' => 'Club Ham', 'price' => 3.20],
@@ -26,6 +35,7 @@ $drinkProducts = [
     ['name' => 'Fanta', 'price' => 2],
     ['name' => 'Sprite', 'price' => 2],
     ['name' => 'Ice-tea', 'price' => 3],
+    ['name' => 'Cecemel', 'price' => 3],
 ];
-$totalValue = 0;
+
 require 'form-view.php';

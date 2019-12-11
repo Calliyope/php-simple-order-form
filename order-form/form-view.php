@@ -33,7 +33,6 @@
 
         $isFormValid = true;
 
-
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $email = ($_POST["email"]);
@@ -221,13 +220,15 @@
 
         <?php
         // THE MAILS
-        $to = "erin.joosen@gmil.com";
+        $to = "erin.joosen@gmail.com";
         $subject = "Order - the Personal Ham Processors";
         $txt = " Thank you for your order: " . $orderedItem['name'] . ". \nYou requested " . $deliveryTime['type'] . " delivery. \nThe total cost was: " . $totalValue;
-        $headers = "From: tPHP@orders.com" . "\r\n" .
+        $headers = "From: erin.joosen@gmail.com" . "\r\n" .
             "CC: $email";
 
-        mail($to, $subject, $txt, $headers);
+        if (mail($to, $subject, $txt, $headers)) { } else {
+            echo 'MAILFAIL';
+        }
         ?>
 
         <footer>You ordered <strong>&euro; <?php echo $totalValue ?></strong> in food and drinks.</footer>
@@ -243,7 +244,7 @@
                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                     ?>
 
-    <?  // whatIsHappening(); 
+    <?php whatIsHappening();
     ?>
 
     <style>

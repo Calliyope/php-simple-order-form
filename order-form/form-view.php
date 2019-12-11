@@ -154,11 +154,14 @@
 
 
                 // setting the ordered item variable for display purposes
-                foreach ($_POST["products"] as $key => $value) {
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-                    $orderedItem = $products[$key];
+                    foreach ($_POST["products"] as $key => $value) {
 
-                    //echo "You have chosen " . $orderedItem["name"];
+                        $orderedItem = $products[$key];
+
+                        //echo "You have chosen " . $orderedItem["name"];
+                    }
                 }
                 ?>
                 <br><br>
@@ -180,29 +183,36 @@
                 <?php endforeach;
 
                 // setting the delivery time variable for display purposes
-                foreach ($_POST["delivery"] as $key => $value) {
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-                    $deliveryTime = $deliveryTypes[$key];
+                    foreach ($_POST["delivery"] as $key => $value) {
 
-                    //echo "You have chosen " . $deliveryTime["type"];
+                        $deliveryTime = $deliveryTypes[$key];
+
+                        //echo "You have chosen " . $deliveryTime["type"];
+                    }
                 }
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-                foreach ($_POST["delivery"] as $key => $value) {
+                    foreach ($_POST["delivery"] as $key => $value) {
 
-                    $deliveryCost = $deliveryTypes[$key];
+                        $deliveryCost = $deliveryTypes[$key];
 
-                    //echo "It's gonna cost " . $deliveryCost["price"];
+                        //echo "It's gonna cost " . $deliveryCost["price"];
+                    }
                 }
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-                foreach ($_POST["products"] as $key => $value) {
+                    foreach ($_POST["products"] as $key => $value) {
 
-                    $productCost = $products[$key];
+                        $productCost = $products[$key];
 
-                    //echo "It's gonna cost " . $productCost["price"];
+                        //echo "It's gonna cost " . $productCost["price"];
+                    }
                 }
-
-                $totalValue = $productCost['price'] + $deliveryCost['price'];
-
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $totalValue = $productCost['price'] + $deliveryCost['price'];
+                }
                 //echo "The total value is " . $totalValue;
                 ?>
                 <br><br>
@@ -220,14 +230,16 @@
 
         <?php
         // THE MAILS
-        $to = "erin.joosen@gmail.com";
-        $subject = "Order - the Personal Ham Processors";
-        $txt = " Thank you for your order: " . $orderedItem['name'] . ". \nYou requested " . $deliveryTime['type'] . " delivery. \nThe total cost was: " . $totalValue;
-        $headers = "From: erin.joosen@gmail.com" . "\r\n" .
-            "CC: $email";
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $to = "erin.joosen@gmail.com";
+            $subject = "Order - the Personal Ham Processors";
+            $txt = " Thank you for your order: " . $orderedItem['name'] . ". \nYou requested " . $deliveryTime['type'] . " delivery. \nThe total cost was: " . $totalValue;
+            $headers = "From: erin.joosen@gmail.com" . "\r\n" .
+                "CC: $email";
 
-        if (mail($to, $subject, $txt, $headers)) { } else {
-            echo 'MAILFAIL';
+            if (mail($to, $subject, $txt, $headers)) { } else {
+                echo 'MAILFAIL';
+            }
         }
         ?>
 

@@ -176,44 +176,36 @@
                 // DELIVERY METHODS
                 foreach ($deliveryTypes as $i => $deliveryType) : ?>
                     <label>
-                        <input type="checkbox" value="1" name="delivery[<?php echo $i ?>]" /> <?php echo $deliveryType['type'] ?> -
+                        <input type="radio" value="<?php echo $i ?>" name="delivery" /> <?php echo $deliveryType['type'] ?> -
                         &euro; <?php echo number_format($deliveryType['price'], 2) ?>
                     </label>
                     <br />
                 <?php endforeach;
 
-                // setting the delivery time variable for display purposes
-                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                // 1. Calculate total product cost
 
-                    foreach ($_POST["delivery"] as $key => $value) {
+                $totalCost = 0;
 
-                        $deliveryTime = $deliveryTypes[$key];
+                foreach ($_POST["products"] as $key => $value) {
 
-                        //echo "You have chosen " . $deliveryTime["type"];
-                    }
+                    $productCost = $products[$key]["price"];
+
+                    $totalCost += $productCost;
+
+                    //echo "It's gonna cost " . $productCost["price"];
                 }
-                if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-                    foreach ($_POST["delivery"] as $key => $value) {
+                // 2. Calculate delivery cost
 
-                        $deliveryCost = $deliveryTypes[$key];
+                $delivery = $deliveryTypes[$_POST["delivery"]];
 
-                        //echo "It's gonna cost " . $deliveryCost["price"];
-                    }
-                }
-                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $deliveryCost = $delivery["price"];
 
-                    foreach ($_POST["products"] as $key => $value) {
+                // 3. Calculate total order cost                
 
-                        $productCost = $products[$key];
+                $totalValue = $totalCost + $deliveryCost;
 
-                        //echo "It's gonna cost " . $productCost["price"];
-                    }
-                }
-                if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                    $totalValue = $productCost['price'] + $deliveryCost['price'];
-                }
-                //echo "The total value is " . $totalValue;
+                echo "The total value is " . $totalValue;
                 ?>
                 <br><br>
 
